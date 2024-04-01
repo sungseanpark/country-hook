@@ -17,10 +17,33 @@ const useField = (type) => {
 
 const useCountry = (name) => {
   const [country, setCountry] = useState(null)
+  const [found, setFound] = useState(false)
 
-  useEffect(() => {})
+  useEffect(() => {
+    const getURL = `https://studies.cs.helsinki.fi/restcountries/api/name/${name}?fullText=true`
+    if (name) {
+      axios.get(getURL)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response.data)
+            setCountry(...response)
+            setFound(true)
+            console.log('hi')
+          } else {
+            setCountry(null)
+            setFound(false)
+          }
+        })
+        .catch((response) => {
+          console.log('catch')
+          console.log(response)
+          setCountry(null)
+          setFound(false)
+        })
+    }
+  }, [name])
 
-  return country
+  return {country, found}
 }
 
 const Country = ({ country }) => {
